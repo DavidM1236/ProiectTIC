@@ -9,24 +9,53 @@ export const useProductStore = defineStore('products', () => {
   const fetchProducts = async () => {
     isLoading.value = true;
     error.value = null;
-    
     try {
-      // apelez API din Express
       const response = await fetch('http://localhost:3000/api/products');
-      
-      if (!response.ok) {
-        throw new Error('Eroare la preluarea produselor');
-      }
-      
-      const data = await response.json();
-      products.value = data;
+      if (!response.ok) throw new Error('Eroare la preluarea produselor');
+      products.value = await response.json();
     } catch (err) {
       error.value = err.message;
-      console.error(err);
     } finally {
       isLoading.value = false;
     }
   };
 
-  return { products, isLoading, error, fetchProducts };
+  const addProduct = async (newProduct) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct)
+      });
+      if (response.ok) await fetchProducts();
+    } catch (err) {
+      console.error("Eroare la adaugare:", err);
+    }
+  };
+
+  const updateProduct = async (id, updatedData) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+      });
+      if (response.ok) await fetchProducts();
+    } catch (err) {
+      console.error("Eroare la actualizare:", err);
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) await fetchProducts();
+    } catch (err) {
+      console.error("Eroare la stergere:", err);
+    }
+  };
+
+  return { products, isLoading, error, fetchProducts, addProduct, updateProduct, deleteProduct };
 });
