@@ -27,24 +27,26 @@ const handleSave = () => {
 
 <template>
   <div class="product-card">
-    <div v-if="!isEditing">
-      <h2>{{ product.name }}</h2>
-      <p class="category">{{ product.category.name }}</p>
-      <p class="price">{{ product.price }} RON</p>
+    <div v-if="!isEditing" class="card-content">
+      <div class="info">
+        <p class="category">{{ product.category.name }}</p>
+        <h2>{{ product.name }}</h2>
+        <p class="price">{{ product.price }} <span>RON</span></p>
+      </div>
       
       <div class="card-actions">
-        <button class="btn-edit" @click="isEditing = true">Editeaza</button>
-        <button class="btn-delete" @click="productStore.deleteProduct(product.id)">Sterge</button>
+        <button class="btn btn-edit" @click="isEditing = true">Editeaza</button>
+        <button class="btn btn-delete" @click="productStore.deleteProduct(product.id)">Sterge</button>
       </div>
     </div>
 
     <div v-else class="edit-mode">
-      <input v-model="editName" type="text" />
-      <input v-model="editPrice" type="number" />
+      <input v-model="editName" type="text" placeholder="Nume produs" />
+      <input v-model="editPrice" type="number" placeholder="Pret" />
       
       <div class="card-actions">
-        <button class="btn-save" @click="handleSave">Salveaza</button>
-        <button class="btn-cancel" @click="isEditing = false">Anuleaza</button>
+        <button class="btn btn-save" @click="handleSave">Salveaza</button>
+        <button class="btn btn-cancel" @click="isEditing = false">Anuleaza</button>
       </div>
     </div>
   </div>
@@ -52,55 +54,115 @@ const handleSave = () => {
 
 <style scoped>
 .product-card {
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  background-color: #fff;
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  border: 1px solid #C9C1B1; /* Oatmeal */
 }
-.price {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: #2c3e50;
-  margin-top: 10px;
-  margin-bottom: 15px;
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(24, 38, 50, 0.1);
 }
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.info {
+  flex-grow: 1;
+}
+
+h2 {
+  margin: 5px 0 15px 0;
+  font-size: 1.25rem;
+  color: #182632; /* Abyssal */
+  line-height: 1.4;
+}
+
 .category {
-  color: #666;
-  font-size: 0.9rem;
+  color: #2C384D; /* Blue Fantastic */
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  font-weight: 700;
 }
+
+.price {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #A35139; /* Truffle Trouble */
+  margin: 0 0 20px 0;
+}
+
+.price span {
+  font-size: 1rem;
+  color: #2C384D;
+}
+
 .card-actions {
   display: flex;
   gap: 10px;
   margin-top: auto;
 }
-button {
+
+.btn {
   flex: 1;
-  padding: 8px;
+  padding: 10px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  color: white;
+  font-weight: 700;
+  transition: background-color 0.2s, opacity 0.2s;
 }
-.btn-edit { background-color: #f39c12; }
-.btn-edit:hover { background-color: #d68910; }
-.btn-delete { background-color: #e74c3c; }
-.btn-delete:hover { background-color: #c0392b; }
-.btn-save { background-color: #2ecc71; }
-.btn-save:hover { background-color: #27ae60; }
-.btn-cancel { background-color: #95a5a6; }
-.btn-cancel:hover { background-color: #7f8c8d; }
+
+.btn-edit { 
+  background-color: #FFB162; /* Burning Flame */
+  color: #182632; 
+}
+.btn-edit:hover { opacity: 0.85; }
+
+.btn-delete { 
+  background-color: #A35139; /* Truffle Trouble */
+  color: #EEE9DF; 
+}
+.btn-delete:hover { opacity: 0.85; }
+
+.btn-save { 
+  background-color: #2C384D; 
+  color: #EEE9DF; 
+}
+.btn-save:hover { background-color: #182632; }
+
+.btn-cancel { 
+  background-color: #C9C1B1; 
+  color: #182632; 
+}
+.btn-cancel:hover { opacity: 0.85; }
 
 .edit-mode {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  height: 100%;
 }
+
 .edit-mode input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 10px 12px;
+  border: 1px solid #C9C1B1;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.edit-mode input:focus {
+  border-color: #2C384D;
 }
 </style>
