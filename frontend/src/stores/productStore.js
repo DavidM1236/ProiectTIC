@@ -1,10 +1,18 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { auth } from '../firebase';
 
 export const useProductStore = defineStore('products', () => {
   const products = ref([]);
   const isLoading = ref(false);
   const error = ref(null);
+
+  const getAuthToken = async () => {
+    if (auth.currentUser) {
+      return await auth.currentUser.getIdToken();
+    }
+    return null;
+  };
 
   const fetchProducts = async () => {
     isLoading.value = true;
@@ -22,9 +30,13 @@ export const useProductStore = defineStore('products', () => {
 
   const addProduct = async (newProduct) => {
     try {
+      const token = await getAuthToken();
       const response = await fetch('http://localhost:3000/api/products', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(newProduct)
       });
       if (response.ok) await fetchProducts();
@@ -35,9 +47,13 @@ export const useProductStore = defineStore('products', () => {
 
   const updateProduct = async (id, updatedData) => {
     try {
+      const token = await getAuthToken();
       const response = await fetch(`http://localhost:3000/api/products/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify(updatedData)
       });
       if (response.ok) await fetchProducts();
@@ -48,8 +64,12 @@ export const useProductStore = defineStore('products', () => {
 
   const deleteProduct = async (id) => {
     try {
+      const token = await getAuthToken();
       const response = await fetch(`http://localhost:3000/api/products/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       if (response.ok) await fetchProducts();
     } catch (err) {

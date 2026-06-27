@@ -36,7 +36,7 @@ const handleAdd = () => {
 const handleLogin = async () => {
   await authStore.login(email.value, password.value);
   if (!authStore.error) {
-    showLoginModal.value = false; // Inchidem fereastra daca logarea a reusit
+    showLoginModal.value = false;
     email.value = '';
     password.value = '';
   }
@@ -45,9 +45,9 @@ const handleLogin = async () => {
 // Functia pentru butonul de sus
 const toggleAuth = () => {
   if (authStore.user) {
-    authStore.logout(); // Daca e logat, il delogam
+    authStore.logout();
   } else {
-    showLoginModal.value = true; // Daca nu e logat, deschidem fereastra
+    showLoginModal.value = true;
   }
 };
 </script>
@@ -107,30 +107,143 @@ const toggleAuth = () => {
 </template>
 
 <style>
-/* ... (Pastreaza restul CSS-ului pe care il aveai intact pana aici) ... */
-body { margin: 0; padding: 0; background-color: #EEE9DF; font-family: 'Segoe UI', sans-serif; color: #182632; }
-.app-wrapper { min-height: 100vh; }
-.navbar { background-color: #2C384D; box-shadow: 0 4px 12px rgba(24, 38, 50, 0.15); position: sticky; top: 0; z-index: 10; }
-.nav-container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-.nav-container h1 { margin: 0; font-size: 1.8rem; color: #EEE9DF; font-weight: 800; letter-spacing: -0.5px; }
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #EEE9DF;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #182632;
+}
 
-.user-menu { font-weight: 700; color: #182632; background: #C9C1B1; padding: 8px 18px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s; cursor: pointer; }
-.user-menu:hover { transform: scale(1.05); }
-.main-content { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-.add-section { display: flex; justify-content: center; margin-bottom: 40px; }
-.add-card { background: #FFFFFF; padding: 24px; border-radius: 12px; box-shadow: 0 8px 16px rgba(24, 38, 50, 0.05); width: 100%; max-width: 700px; border: none; border-top: 4px solid #A35139; }
-.add-card h3 { margin: 0 0 20px 0; color: #182632; }
-.input-group { display: flex; gap: 15px; }
-.input-group input { flex: 1; padding: 10px 15px; border: 1px solid #C9C1B1; border-radius: 8px; font-size: 1rem; outline: none; background-color: #FAFAFA; transition: border-color 0.2s; }
-.input-group input:focus { border-color: #2C384D; }
-.btn-add { padding: 10px 24px; background-color: #182632; color: #EEE9DF; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background-color 0.2s, transform 0.1s; }
-.btn-add:hover { background-color: #2C384D; transform: translateY(-1px); }
-.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-.status-messages { text-align: center; margin-bottom: 20px; }
-.loading { color: #2C384D; font-weight: 500; }
-.error { color: #A35139; font-weight: 500; }
+.app-wrapper {
+  min-height: 100vh;
+}
 
-/* ======== STILURI NOI PENTRU MODAL ======== */
+.navbar {
+  background-color: #2C384D;
+  box-shadow: 0 4px 12px rgba(24, 38, 50, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-container h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #EEE9DF;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.user-menu {
+  font-weight: 700;
+  color: #182632;
+  background: #FFB162;
+  padding: 8px 18px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.user-menu:hover {
+  transform: scale(1.05);
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.add-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.add-card {
+  background: #FFFFFF;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(24, 38, 50, 0.05);
+  width: 100%;
+  max-width: 700px;
+  border: none;
+  border-top: 4px solid #A35139;
+}
+
+.add-card h3 {
+  margin: 0 0 20px 0;
+  color: #182632;
+}
+
+.input-group {
+  display: flex;
+  gap: 15px;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #C9C1B1;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #FAFAFA;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #2C384D;
+}
+
+.btn-add {
+  padding: 10px 24px;
+  background-color: #182632;
+  color: #EEE9DF;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-add:hover {
+  background-color: #2C384D;
+  transform: translateY(-1px);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.status-messages {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.loading { 
+  color: #2C384D; 
+  font-weight: 500; 
+}
+
+.error { 
+  color: #A35139; 
+  font-weight: 500; 
+}
+
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;

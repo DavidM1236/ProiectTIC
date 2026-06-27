@@ -1,13 +1,16 @@
-const { initializeApp, cert } = require('firebase-admin/app');
+const { initializeApp, cert, getApps } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
+const { getAuth } = require('firebase-admin/auth');
+
 const serviceAccount = require('./firebase-key.json');
 
-// Inițializăm aplicația folosind sintaxa nouă
-initializeApp({
-  credential: cert(serviceAccount)
-});
+if (getApps().length === 0) {
+  initializeApp({
+    credential: cert(serviceAccount)
+  });
+}
 
-// Obținem instanța bazei de date
 const db = getFirestore();
+const adminAuth = getAuth();
 
-module.exports = { db };
+module.exports = { db, adminAuth };
