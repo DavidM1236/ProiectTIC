@@ -23,6 +23,13 @@ const email = ref('');
 const password = ref('');
 
 const showCartDropdown = ref(false);
+const showNotification = ref(false);
+const triggerNotification = () => {
+  showNotification.value = true;
+  setTimeout(() => {
+    showNotification.value = false;
+  }, 2000);
+};
 
 onMounted(() => {
   productStore.fetchProducts();
@@ -80,155 +87,80 @@ const toggleAuth = () => {
 
 <template>
 <div class="app-wrapper">
-  <nav class="navbar">
-    <div class="nav-container">
-      <h1>Periferice.ro</h1>
-      <div class="nav-right">
-        <div class="cart-container">
-          <button
-            class="btn-cart-toggle"
-            @click="showCartDropdown = !showCartDropdown"
-          >
-            Cos ({{ cartStore.totalItems }})
-          </button>
-
-          <div v-if="showCartDropdown" class="cart-dropdown">
-            <h4 class="cart-title">Cosul tau</h4>
-
-            <div v-if="cartStore.items.length === 0" class="empty-cart">
-              Cosul este gol momentan.
-            </div>
-
-            <div v-else>
-              <div
-                v-for="item in cartStore.items"
-                :key="item.id"
-                class="cart-item"
-              >
-                <div class="cart-item-info">
-                  <span class="cart-item-name">{{ item.name }}</span>
-                  <span class="cart-item-price"
-                    >{{ item.price * item.quantity }} RON</span
-                  >
-                </div>
-                <div class="cart-controls">
-                  <button
-                    class="btn-qty"
-                    @click="cartStore.updateQuantity(item.id, -1)"
-                  >
-                    -
-                  </button>
-                  <span class="qty-text">{{ item.quantity }}</span>
-                  <button
-                    class="btn-qty"
-                    @click="cartStore.updateQuantity(item.id, 1)"
-                  >
-                    +
-                  </button>
-                  <button
-                    class="btn-remove-cart"
-                    @click="cartStore.removeFromCart(item.id)"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-
-              <div class="cart-total">
-                Total: {{ cartStore.totalPrice }} RON
-              </div>
-              <button class="btn-checkout" @click="showCartDropdown = false">Plateste</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="user-menu" @click="toggleAuth">
-          <span>{{ authStore.user ? 'Logout' : '👤 Guest' }}</span>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <div
-    v-if="showLoginModal"
-    class="modal-overlay"
-    @click.self="showLoginModal = false"
-  >
-    <div class="modal-content">
-      <h2>Conectare Administrator</h2>
-      <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
-        class="login-input"
-      />
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Parola"
-        class="login-input"
-      />
-      <p v-if="authStore.error" class="error-text">{{ authStore.error }}</p>
-      <div class="modal-actions">
-        <button class="btn-login" @click="handleLogin">Intra in cont</button>
-        <button class="btn-close" @click="showLoginModal = false">
-          Anuleaza
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <main class="main-content">
-    <div v-if="authStore.user" class="add-section">
-      <div class="add-card">
-        <h3>Adauga un produs nou</h3>
-        <div class="input-group">
-          <div class="input-wrapper">
-            <input
-              v-model="newName"
-              type="text"
-              placeholder="Nume produs"
-              :class="{ 'input-error': nameError }"
-            />
-            <span v-if="nameError" class="validation-error"
-              >{{ nameError }}</span
-            >
-          </div>
-          <div class="input-wrapper">
-            <input
-              v-model="newPrice"
-              type="number"
-              placeholder="Pret (RON)"
-              :class="{ 'input-error': priceError }"
-            />
-            <span v-if="priceError" class="validation-error"
-              >{{ priceError }}</span
-            >
-          </div>
-          <button class="btn-add" @click="handleAdd">Adauga</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="status-messages">
-      <p v-if="productStore.isLoading" class="loading">
-        Se incarca produsele...
-      </p>
-      <p v-if="productStore.error" class="error">{{ productStore.error }}</p>
-    </div>
-
-    <div
-      v-if="!productStore.isLoading && productStore.products.length > 0"
-      class="products-grid"
-    >
-      <ProductCard
-        v-for="product in productStore.products"
-        :key="product.id"
-        :product="product"
-      />
-    </div>
-  </main>
+	<nav class="navbar">
+		<div class="nav-container">
+			<h1>Periferice.ro</h1>
+			<div class="nav-right">
+				<div class="cart-container">
+					<button class="btn-cart-toggle" @click="showCartDropdown = !showCartDropdown"> Cos ({{ cartStore.totalItems }}) </button>
+					<div v-if="showCartDropdown" class="cart-dropdown">
+						<h4 class="cart-title">Cosul tau</h4>
+						<div v-if="cartStore.items.length === 0" class="empty-cart"> Cosul este gol momentan. </div>
+						<div v-else>
+							<div v-for="item in cartStore.items" :key="item.id" class="cart-item">
+								<div class="cart-item-info">
+									<span class="cart-item-name">{{ item.name }}</span>
+									<span class="cart-item-price">{{ item.price * item.quantity }} RON</span>
+								</div>
+								<div class="cart-controls">
+									<button class="btn-qty" @click="cartStore.updateQuantity(item.id, -1)"> - </button>
+									<span class="qty-text">{{ item.quantity }}</span>
+									<button class="btn-qty" @click="cartStore.updateQuantity(item.id, 1)"> + </button>
+									<button class="btn-remove-cart" @click="cartStore.removeFromCart(item.id)"> 🗑️ </button>
+								</div>
+							</div>
+							<div class="cart-total"> Total: {{ cartStore.totalPrice }} RON </div>
+							<button class="btn-checkout" @click="showCartDropdown = false">Plateste</button>
+						</div>
+					</div>
+				</div>
+				<div class="user-menu" @click="toggleAuth">
+					<span>{{ authStore.user ? 'Logout' : '👤 Guest' }}</span>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<div v-if="showLoginModal" class="modal-overlay" @click.self="showLoginModal = false">
+		<div class="modal-content">
+			<h2>Conectare Administrator</h2>
+			<input v-model="email" type="email" placeholder="Email" class="login-input" />
+			<input v-model="password" type="password" placeholder="Parola" class="login-input" />
+			<p v-if="authStore.error" class="error-text">{{ authStore.error }}</p>
+			<div class="modal-actions">
+				<button class="btn-login" @click="handleLogin">Intra in cont</button>
+				<button class="btn-close" @click="showLoginModal = false"> Anuleaza </button>
+			</div>
+		</div>
+	</div>
+	<main class="main-content">
+		<div v-if="authStore.user" class="add-section">
+			<div class="add-card">
+				<h3>Adauga un produs nou</h3>
+				<div class="input-group">
+					<div class="input-wrapper">
+						<input v-model="newName" type="text" placeholder="Nume produs" :class="{ 'input-error': nameError }" />
+						<span v-if="nameError" class="validation-error">{{ nameError }}</span>
+					</div>
+					<div class="input-wrapper">
+						<input v-model="newPrice" type="number" placeholder="Pret (RON)" :class="{ 'input-error': priceError }" />
+						<span v-if="priceError" class="validation-error">{{ priceError }}</span>
+					</div>
+					<button class="btn-add" @click="handleAdd">Adauga</button>
+				</div>
+			</div>
+		</div>
+		<div class="status-messages">
+			<p v-if="productStore.isLoading" class="loading"> Se incarca produsele... </p>
+			<p v-if="productStore.error" class="error">{{ productStore.error }}</p>
+		</div>
+		<div v-if="!productStore.isLoading && productStore.products.length > 0" class="products-grid">
+			<ProductCard v-for="product in productStore.products" :key="product.id" :product="product" @notify="triggerNotification" />
+		</div>
+	</main>
 </div>
+<transition name="fade">
+	<div v-if="showNotification" class="toast-notification"> Produs adaugat in cos. </div>
+</transition>
 </template>
 
 <style>
@@ -622,6 +554,29 @@ body {
 .btn-checkout:hover {
   background-color: #182632;
   transform: translateY(-1px);
+}
+
+.toast-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #2c384d;
+  color: #eee9df;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-weight: 600;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 @media (max-width: 600px) {

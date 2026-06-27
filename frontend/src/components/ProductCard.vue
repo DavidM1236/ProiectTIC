@@ -27,45 +27,42 @@ const handleSave = () => {
   productStore.updateProduct(props.product.id, updatedData);
   isEditing.value = false;
 };
+
+const emit = defineEmits(['notify']);
+
+const addToCartAndNotify = () => {
+  cartStore.addToCart(props.product);
+  emit('notify'); 
+};
+
 </script>
 
 <template>
 <div class="product-card">
-  <div v-if="!isEditing" class="card-content">
-    <div class="info">
-      <p class="category">{{ product.category.name }}</p>
-      <h2>{{ product.name }}</h2>
-      <p class="price">{{ product.price }} <span>RON</span></p>
-    </div>
-
-    <div v-if="authStore.user" class="card-actions">
-      <button class="btn btn-edit" @click="isEditing = true">Editeaza</button>
-      <button
-        class="btn btn-delete"
-        @click="productStore.deleteProduct(product.id)"
-      >
-        Sterge
-      </button>
-    </div>
-
-    <div v-else class="card-actions">
-      <button class="btn btn-buy" @click="cartStore.addToCart(product)">
-        Cumpara
-      </button>
-    </div>
-  </div>
-
-  <div v-else class="edit-mode">
-    <input v-model="editName" type="text" placeholder="Nume produs" />
-    <input v-model="editPrice" type="number" placeholder="Pret" />
-
-    <div v-if="authStore.user" class="card-actions">
-      <button class="btn btn-save" @click="handleSave">Salveaza</button>
-      <button class="btn btn-cancel" @click="isEditing = false">
-        Anuleaza
-      </button>
-    </div>
-  </div>
+	<div v-if="!isEditing" class="card-content">
+		<div class="info">
+			<p class="category">{{ product.category.name }}</p>
+			<h2>{{ product.name }}</h2>
+			<p class="price">{{ product.price }}
+				<span>RON</span>
+			</p>
+		</div>
+		<div v-if="authStore.user" class="card-actions">
+			<button class="btn btn-edit" @click="isEditing = true">Editeaza</button>
+			<button class="btn btn-delete" @click="productStore.deleteProduct(product.id)"> Sterge </button>
+		</div>
+		<div v-else class="card-actions">
+			<button class="btn btn-buy" @click="addToCartAndNotify"> Cumpara </button>
+		</div>
+	</div>
+	<div v-else class="edit-mode">
+		<input v-model="editName" type="text" placeholder="Nume produs" />
+		<input v-model="editPrice" type="number" placeholder="Pret" />
+		<div v-if="authStore.user" class="card-actions">
+			<button class="btn btn-save" @click="handleSave">Salveaza</button>
+			<button class="btn btn-cancel" @click="isEditing = false"> Anuleaza </button>
+		</div>
+	</div>
 </div>
 </template>
 
