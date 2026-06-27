@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue';
 import { useProductStore } from '../stores/productStore';
+import { useAuthStore } from '../stores/authStore';
 
+const authStore = useAuthStore();
 const productStore = useProductStore();
 
 const props = defineProps({
@@ -34,7 +36,7 @@ const handleSave = () => {
         <p class="price">{{ product.price }} <span>RON</span></p>
       </div>
       
-      <div class="card-actions">
+      <div v-if="authStore.user" class="card-actions">
         <button class="btn btn-edit" @click="isEditing = true">Editeaza</button>
         <button class="btn btn-delete" @click="productStore.deleteProduct(product.id)">Sterge</button>
       </div>
@@ -44,7 +46,7 @@ const handleSave = () => {
       <input v-model="editName" type="text" placeholder="Nume produs" />
       <input v-model="editPrice" type="number" placeholder="Pret" />
       
-      <div class="card-actions">
+      <div v-if="authStore.user" class="card-actions">
         <button class="btn btn-save" @click="handleSave">Salveaza</button>
         <button class="btn btn-cancel" @click="isEditing = false">Anuleaza</button>
       </div>
