@@ -56,14 +56,14 @@ const handleSave = () => {
 
 <style scoped>
 .product-card {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  border: 1px solid #C9C1B1; /* Oatmeal */
+  border: 1px solid #c9c1b1;
 }
 
 .product-card:hover {
@@ -84,12 +84,12 @@ const handleSave = () => {
 h2 {
   margin: 5px 0 15px 0;
   font-size: 1.25rem;
-  color: #182632; /* Abyssal */
+  color: #182632;
   line-height: 1.4;
 }
 
 .category {
-  color: #2C384D; /* Blue Fantastic */
+  color: #2c384d;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -100,13 +100,13 @@ h2 {
 .price {
   font-weight: 800;
   font-size: 1.5rem;
-  color: #A35139; /* Truffle Trouble */
+  color: #a35139;
   margin: 0 0 20px 0;
 }
 
 .price span {
   font-size: 1rem;
-  color: #2C384D;
+  color: #2c384d;
 }
 
 .card-actions {
@@ -125,29 +125,41 @@ h2 {
   transition: background-color 0.2s, opacity 0.2s;
 }
 
-.btn-edit { 
-  background-color: #FFB162; /* Burning Flame */
-  color: #182632; 
+.btn-edit {
+  background-color: #ffb162;
+  color: #182632;
 }
-.btn-edit:hover { opacity: 0.85; }
 
-.btn-delete { 
-  background-color: #A35139; /* Truffle Trouble */
-  color: #EEE9DF; 
+.btn-edit:hover {
+  opacity: 0.85;
 }
-.btn-delete:hover { opacity: 0.85; }
 
-.btn-save { 
-  background-color: #2C384D; 
-  color: #EEE9DF; 
+.btn-delete {
+  background-color: #a35139;
+  color: #eee9df;
 }
-.btn-save:hover { background-color: #182632; }
 
-.btn-cancel { 
-  background-color: #C9C1B1; 
-  color: #182632; 
+.btn-delete:hover {
+  opacity: 0.85;
 }
-.btn-cancel:hover { opacity: 0.85; }
+
+.btn-save {
+  background-color: #2c384d;
+  color: #eee9df;
+}
+
+.btn-save:hover {
+  background-color: #182632;
+}
+
+.btn-cancel {
+  background-color: #c9c1b1;
+  color: #182632;
+}
+
+.btn-cancel:hover {
+  opacity: 0.85;
+}
 
 .edit-mode {
   display: flex;
@@ -158,13 +170,14 @@ h2 {
 
 .edit-mode input {
   padding: 10px 12px;
-  border: 1px solid #C9C1B1;
+  border: 1px solid #c9c1b1;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
 }
 
 .edit-mode input:focus {
-  border-color: #2C384D;
+  border-color: #2c384d;
 }
+
 </style>

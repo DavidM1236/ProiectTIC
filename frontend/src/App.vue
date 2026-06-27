@@ -11,6 +11,10 @@ const authStore = useAuthStore();
 const newName = ref('');
 const newPrice = ref('');
 
+// Variabile pentru erorile de validare
+const nameError = ref('');
+const priceError = ref('');
+
 // Variabile pentru Login Modal
 const showLoginModal = ref(false);
 const email = ref('');
@@ -21,13 +25,31 @@ onMounted(() => {
 });
 
 const handleAdd = () => {
-  if (!newName.value || !newPrice.value) return;
+  nameError.value = '';
+  priceError.value = '';
+  let isValid = true;
+
+  if (!newName.value.trim()) {
+    nameError.value = 'Numele produsului este necesar.';
+    isValid = false;
+  }
+
+  if (!newPrice.value || Number(newPrice.value) <= 0) {
+    priceError.value = 'Pretul trebuie sa fie mai mare decat 0.';
+    isValid = false;
+  }
+
+  if (!isValid) return;
+
   const product = {
-    name: newName.value,
+    name: newName.value.trim(),
     price: Number(newPrice.value),
     category: { id: 'cat_custom', name: 'Altele' }
   };
+  
   productStore.addProduct(product);
+  
+  // Curatam campurile dupa succes
   newName.value = '';
   newPrice.value = '';
 };
@@ -42,7 +64,7 @@ const handleLogin = async () => {
   }
 };
 
-// Functia pentru butonul de sus
+// Functia pentru butonul de Guest/Admin
 const toggleAuth = () => {
   if (authStore.user) {
     authStore.logout();
@@ -82,9 +104,28 @@ const toggleAuth = () => {
       <div v-if="authStore.user" class="add-section">
         <div class="add-card">
           <h3>Adauga un produs nou</h3>
+
           <div class="input-group">
-            <input v-model="newName" type="text" placeholder="Nume produs" />
-            <input v-model="newPrice" type="number" placeholder="Pret (RON)" />
+            <div class="input-wrapper">
+              <input 
+                v-model="newName" 
+                type="text" 
+                placeholder="Nume produs" 
+                :class="{ 'input-error': nameError }"
+              />
+              <span v-if="nameError" class="validation-error">{{ nameError }}</span>
+            </div>
+
+            <div class="input-wrapper">
+              <input 
+                v-model="newPrice" 
+                type="number" 
+                placeholder="Pret (RON)" 
+                :class="{ 'input-error': priceError }"
+              />
+              <span v-if="priceError" class="validation-error">{{ priceError }}</span>
+            </div>
+
             <button class="btn-add" @click="handleAdd">Adauga</button>
           </div>
         </div>
@@ -110,8 +151,8 @@ const toggleAuth = () => {
 body {
   margin: 0;
   padding: 0;
-  background-color: #EEE9DF;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #eee9df;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #182632;
 }
 
@@ -120,7 +161,7 @@ body {
 }
 
 .navbar {
-  background-color: #2C384D;
+  background-color: #2c384d;
   box-shadow: 0 4px 12px rgba(24, 38, 50, 0.15);
   position: sticky;
   top: 0;
@@ -139,7 +180,7 @@ body {
 .nav-container h1 {
   margin: 0;
   font-size: 1.8rem;
-  color: #EEE9DF;
+  color: #eee9df;
   font-weight: 800;
   letter-spacing: -0.5px;
 }
@@ -147,10 +188,10 @@ body {
 .user-menu {
   font-weight: 700;
   color: #182632;
-  background: #FFB162;
+  background: #ffb162;
   padding: 8px 18px;
   border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
   cursor: pointer;
 }
@@ -172,14 +213,14 @@ body {
 }
 
 .add-card {
-  background: #FFFFFF;
+  background: #ffffff;
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(24, 38, 50, 0.05);
   width: 100%;
   max-width: 700px;
   border: none;
-  border-top: 4px solid #A35139;
+  border-top: 4px solid #a35139;
 }
 
 .add-card h3 {
@@ -190,27 +231,46 @@ body {
 .input-group {
   display: flex;
   gap: 15px;
+  align-items: flex-start;
 }
 
-.input-group input {
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  gap: 4px;
+}
+
+.input-wrapper input {
   padding: 10px 15px;
-  border: 1px solid #C9C1B1;
+  border: 1px solid #c9c1b1;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   transition: border-color 0.2s;
 }
 
-.input-group input:focus {
-  border-color: #2C384D;
+.input-wrapper input:focus {
+  border-color: #2c384d;
+}
+
+.input-wrapper input.input-error {
+  border-color: #a35139;
+  background-color: #fdf5f3;
+}
+
+.validation-error {
+  color: #a35139;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: 5px;
 }
 
 .btn-add {
   padding: 10px 24px;
   background-color: #182632;
-  color: #EEE9DF;
+  color: #eee9df;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -219,7 +279,7 @@ body {
 }
 
 .btn-add:hover {
-  background-color: #2C384D;
+  background-color: #2c384d;
   transform: translateY(-1px);
 }
 
@@ -234,72 +294,109 @@ body {
   margin-bottom: 20px;
 }
 
-.loading { 
-  color: #2C384D; 
-  font-weight: 500; 
+.loading {
+  color: #2c384d;
+  font-weight: 500;
 }
 
-.error { 
-  color: #A35139; 
-  font-weight: 500; 
+.error {
+  color: #a35139;
+  font-weight: 500;
 }
 
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: rgba(24, 38, 50, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 100;
 }
+
 .modal-content {
   background: white;
   padding: 30px;
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
+
 .modal-content h2 {
   margin: 0 0 10px 0;
-  color: #2C384D;
+  color: #2c384d;
   text-align: center;
 }
+
 .login-input {
   padding: 12px;
-  border: 1px solid #C9C1B1;
+  border: 1px solid #c9c1b1;
   border-radius: 8px;
   font-size: 1rem;
 }
+
 .login-input:focus {
   outline: none;
-  border-color: #2C384D;
+  border-color: #2c384d;
 }
+
 .error-text {
-  color: #A35139;
+  color: #a35139;
   font-size: 0.9rem;
   margin: 0;
   text-align: center;
 }
+
 .modal-actions {
   display: flex;
   gap: 10px;
   margin-top: 10px;
 }
+
 .btn-login {
-  flex: 1; padding: 12px;
-  background-color: #2C384D; color: white;
-  border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
+  flex: 1;
+  padding: 12px;
+  background-color: #2c384d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
 }
-.btn-login:hover { background-color: #182632; }
+
+.btn-login:hover {
+  background-color: #182632;
+}
+
 .btn-close {
-  flex: 1; padding: 12px;
-  background-color: #C9C1B1; color: #182632;
-  border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
+  flex: 1;
+  padding: 12px;
+  background-color: #c9c1b1;
+  color: #182632;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
 }
-.btn-close:hover { opacity: 0.8; }
+
+.btn-close:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 600px) {
+  .input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-add {
+    height: auto;
+  }
+}
 </style>
